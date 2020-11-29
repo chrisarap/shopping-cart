@@ -1,16 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Login</title>
+	<link rel="stylesheet" type="text/css" href="./assets/css/login.css">
 </head>
 <body>
+	<form action="btn_event.php" method="get">
 
-<!-- this username=admin and password=1234 are just for testing-->
-<form action="button_event.php" method="post">
-	<input type="text" name="username" placeholder="username" required value="admin">
-	<input type="text" name="password" placeholder="password" required value="12345">
-	<input type="submit" name="log-in" value="log in">
-</form>
+		<label for="username">login
+			<input class="bar_text" id="username" name="username" placeholder="username" value="admin">
+		</label>
+		
+		<label  for="password">password
+			<input class="bar_text" id="password" name="password" placeholder="password" value="12345">
+		</label>
 
+		<div class="btns">
+			<input class="btn" type="submit" name="login" value="log in">
+			<input class="btn" type="submit" name="signup" value="sign up">
+		</div>
+	</form>
 </body>
 </html>

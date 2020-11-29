@@ -1,5 +1,14 @@
 <?php
-//session_start();
 
-echo " fuck this " . $_GET['test'];
+echo "thanks";
+
+require('test.php');
+
+$myvar = new Total();
+$myvar->load();
+
+echo "<a href='search.php'>back</a>";
+
+
+
 ?>

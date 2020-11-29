@@ -1,5 +1,5 @@
 .container_products {
-	background: green;
+	background: pink;
 	display: flex;
 	justify-content: center;
 }
@@ -19,7 +19,6 @@
 }
 
 #hide{
-	visibility: 0;
 	display: none;
-	opacity: 1;
+
 }

@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Search</title>
+
 	<link rel="stylesheet" type="text/css" href="./assets/css/search.css">
 </head>
 <body>
-
 <?php
-	// import classes
-	require('classes.php');
 
-	// print products
-	$product = new Product();
-	$product->print_product();
+require('classes.php');
+
+// load products
+$product = new Product();
+$product->print_product();
+
 ?>
-
+<a href="load_cart.php">my cart</a>
 
 </body>
 </html>
+

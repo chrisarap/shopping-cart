@@ -4,6 +4,8 @@ require('connection.php');
 
 session_start();
 
+
+
 // call product data
 $mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
 $query = "SELECT * FROM products WHERE name='" . $_SESSION['name'] ."'";
