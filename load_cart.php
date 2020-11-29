@@ -9,19 +9,19 @@
 
 require('classes.php');
 
+// load cart
 $cart = new Cart();
 $cart->load_cart();
 
+session_start();
 
-
-// total mount
-
-//$invoice = new Invoice();
-//echo $invoice->subtotal();
+// print sub total
+$invoice = new Invoice();
+echo $invoice->subtotal();
 
 ?>
 
-<form action="final.php" method="get">
+<form action="btn_event.php" method="get">
 	<input required type="radio" name="radio" value="pickup">pick up
 	<input required type="radio" name="radio" value="ups">	ups
 	<input type="submit" name="pay" value="pay">

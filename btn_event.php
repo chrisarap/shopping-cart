@@ -55,4 +55,32 @@ if (isset($_GET['delete'])) {
 	header("location: load_cart.php");
 }
 
+// payment
+if (isset($_GET['pay'])) {
+	$invoice = new Invoice();
+	
+	session_start();
+	$_SESSION['subtotal'] = $invoice->subtotal();
+
+	if ($_GET['radio'] == 'ups') {
+		$_SESSION['shipping'] = 5;
+	} else {
+		$_SESSION['shipping'] = 0;
+	}
+	
+	$_SESSION['total'] = $invoice->total($invoice->subtotal(), $_SESSION['shipping']);
+	
+	
+	header("location: subfinal.php");
+}
+
+// final payment
+
+if (isset($_GET['payment'])) {
+
+	$invoice = new Invoice();
+	$invoice->pay();
+	header("location: final.php");
+}
+
 ?>

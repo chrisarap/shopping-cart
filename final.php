@@ -1,44 +1,30 @@
 <?php
 
-require 'test.php';
 
 
+require ("classes.php");
+
+$query = "select * from users";
+
+$user = new User($query);
+$result = $user->resulset($query);
+$row = $result->fetch_array(MYSQLI_ASSOC);
 
 
-$myvar = new Total();
+echo "thanks for shopping " . $row['username'];
 
-$subtotal = $myvar->subtotal();
-$shipping = 0.00;
-
-if($_GET['radio'] == 'ups'){
-	$shipping = 5.00;
-}
-
-$total = $subtotal + $shipping;
+echo "previous balance " . $row['prev_balance'] . "<br>";
+echo "invoice " . $row['count'] . "<br>";
+echo "new balance " . $row['balance'] . "<br>";
 
 
+// clean cart
+$query = "delete from cart";
+$cart = new Cart();
+$cart->resulset($query);
 
-echo $subtotal . "<br>";
-echo $shipping  . "<br>";
-echo $total  . "<br>";
-
-$myvar->update_total($total);
-
-
-echo '<form action="asd.php" method="get">';
-echo '<input type="submit" name="payment" value="payment">';
-echo "</form>";
+echo "<a href='search.php'>back</a>";
 
 
-echo "<a href='load_cart.php'>back</a>";
 
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
-
-</body>
-</html>

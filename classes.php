@@ -167,43 +167,6 @@ class Product extends Connection
 class Cart extends Connection
 {
 
-	function Cart()
-	{
-		$this->subtotal = 0;
-	}
-
-	function setter($subtotal)
-	{
-		$this->subtotal = $subtotal;
-	}
-
-	function getter(){
-		return $this->subtotal;
-	}
-
-	
-
-	function add_shipping($shipping)
-	{
-		return $this->getter() + $shipping;
-	}
-
-	function payment($id, $total, $balance)
-	{
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "UPDATE users SET balance = $balance - $total WHERE id_user = '$id'";
-		$result = $mysqli->query($query);
-		$mysqli->close();
-	}
-
-
-
-
-
-
-
-
-
 	function add_row_cart($nameProduct, $priceProduct, $quantity, $totalPrice)
 	{
 		$query = "INSERT INTO cart (name_product, price, quantity, total_price) values ('$nameProduct','$priceProduct','$quantity','$totalPrice')";
@@ -274,6 +237,8 @@ class Cart extends Connection
 	}
 
 
+
+
 } // end cart class
 
 
@@ -328,95 +293,47 @@ class Rating extends Connection {
 class Invoice extends Connection
 {
 	
-	function subtotal($id)
+	function subtotal()
 	{
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "SELECT * FROM cart WHERE id_user = '$id'";	
-		$result = $mysqli->query($query);
-		$mysqli->close();
+		$query = "SELECT * FROM cart";
+		$result = $this->resulset($query);
 
 		if ($result) {
 			$total = 0;
 			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-				echo $row['id_user'] . " " . $row['name_product'] . " " . $row['total_price'] . " <br>";
 				$total += $row['total_price'];
 			}
-			echo "sub-total = $total <br>";
-			$this->setter($total);
+			return $total;
 		}
 	}
 
+	function total($subtotal, $shipping)
+	{
+		session_start();
 
+		$total = $subtotal + $shipping;
+		$username = $_SESSION['username'];
+		
+		$query = "UPDATE users SET count = '$total'
+				WHERE username = '$username'";
+		$this->resulset($query);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	
-
-
-	function subtotal(){
-		require('connection.php');
-		$mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
-		$query = "SELECT total_price FROM cart";
-		$result = $mysqli->query($query);
-		$mysqli->close();
-
-		$total = 0;
-		if ($result->num_rows) {
-			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-				$total += $row['total_price'];
-			}	
-		}
 		return $total;
 	}
 
-	function update_total($total){
-		require('connection.php');
-		$mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
-		$query = "UPDATE users set count = $total where username='christian.arteaga'";
-		$result = $mysqli->query($query);
-		$mysqli->close();
+	function pay(){
+		$query =  "SELECT * FROM users";
+		$result = $this->resulset($query);
+		$row = $result->fetch_array(MYSQLI_ASSOC);
+
+		$balance = $row['balance'];
+		$newBalance = $row['balance'] - $row['count'];
+
+		$query = "UPDATE users SET balance = '$newBalance', prev_balance = '$balance'";
+
+		$this->resulset($query);
 	}
 
-	function load() {
-		require('connection.php');
-		$mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
-
-
-		// load data
-		$query = "SELECT * from users where username = 'christian.arteaga'";
-		$result = $mysqli->query($query);
-
-		// math data
-		$row = $result->fetch_array(MYSQLI_ASSOC);
-		$count = $row['count'];
-		$balance = $row['balance'];
-		$total = $balance - $count;
-
-		// update data
-
-		$uptQuery = "UPDATE users 
-		SET balance = " . $total . ", prev_balance=". $balance.", count=".$count." WHERE username = 'christian.arteaga' ";
-		$result = $mysqli->query($uptQuery);
-		$mysqli->close();
-
-		echo "<br>total count " . $count . "<br>prev balance ". $balance . "<br>new balance " . $total;
-
-		*/
 } // end class total
 
 
