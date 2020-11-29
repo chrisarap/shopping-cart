@@ -21,9 +21,8 @@ $rating = new Rating();
 $rating->print_rating();
 
 
-
-
-echo '<a href="search.php">back</a>';
+echo '<a href="search.php">back</a><br>';
+echo '<a href="load_cart.php">mycart</a>';
 ?>
 
 

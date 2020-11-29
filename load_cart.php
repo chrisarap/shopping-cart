@@ -7,34 +7,17 @@
 
 <?php
 
-require('connection.php');
+require('classes.php');
 
-$mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
-$query = "SELECT * FROM cart";
-$result = $mysqli->query($query);
-$mysqli->close();
+$cart = new Cart();
+$cart->load_cart();
 
 
-if($result->num_rows){
-	while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-		
-		echo "<form action='test.php' method='get'>";
-			echo "<div class='row'>";
-				echo "<input type='text' name='name_product' value='" . $row['name_product'] . "'>";
-				echo "<input type='text' name='price' value='" . $row['price'] . "'>";
-				echo "<input name='qnt' type='number' value='". $row['quantity'] . "'>";
-				echo "<div>". $row['total_price']	."</div>";
-				echo "<input type='submit' value='update' name='update'>";
-				echo "<input type='submit' value='delete' name='delete'>";
-			echo "</div>";
-		echo "</form>";
-		
-	}
-}
 
-require('test.php');
-$asd = new Total();
-echo $subtotal = $asd->subtotal();
+// total mount
+
+//$invoice = new Invoice();
+//echo $invoice->subtotal();
 
 ?>
 
