@@ -1,106 +1,85 @@
 <?php
-class Connection {
+
+class Connection 
+{
 	var $db_host = 'localhost';
 	var $db_name = 'abc_hosting';
 	var $db_user = 'root';
 	var $db_pass = '';
-}
 
-class Login extends Connection {
-
-	function Login($username, $password){
-		$this->username = $username;
-		$this->password = $password;
-	}
-
-	function create_new_user(){
+	function resulset($query)
+	{
 		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "INSERT INTO users (username, password, balance) VALUES ('$this->username', '$this->password', 100)";
-		$mysqli->query($query);
-		$mysqli->close();
-	}
-
-	function check_user(){
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "SELECT * FROM users WHERE username = '$this->username' && password = '$this->password'";
 		$result = $mysqli->query($query);
 		$mysqli->close();
-		$this->choose_page($result->num_rows); // sent a row
+		return $result;
+	}
+}
+
+
+class User extends Connection 
+{
+	function check_user($username, $password)
+	{
+		$query = "SELECT * FROM users WHERE username = '$username' && password = '$password'";
+		$result = $this->resulset($query);
+		$numRow = $result->num_rows;
+		
+		$this->choose_page($numRow, $username);
 	}
 
-	function choose_page($row){
-		if ($row != 0) {
+	function choose_page($numRow, $username)
+	{
+		if ($numRow) {
 			session_start();
-			$_SESSION['username'] = $this->username;
-			$_SESSION['password'] = $this->password;		
-			header('location: index.php');
+			$_SESSION['username'] = $username;
+			header("location: search.php");
 		} else {
-			header('location: login.php');
+			header("location: login.php");
 		}
 	}
-
-	function load_user_data(){
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "SELECT * FROM users WHERE username = '$this->username' && password = '$this->password'";
-		$result = $mysqli->query($query);
-		$mysqli->close();
-		return $result->fetch_array(MYSQLI_ASSOC); // return an associative row
-	}
 }
 
-class Products extends Connection {
-	function Products($productName){
-		$this->productName = $productName;
-	}
+class Product extends Connection
+{
+	function print_product()
+	{
+		// load products data
+		$query = "SELECT * FROM products";
+		$result = $this->resulset($query);
+		$numRow = $result->num_rows;
 
-	function load_product_data(){
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "SELECT * FROM products WHERE name = '$this->productName'";
-		$result = $mysqli->query($query);
-		$mysqli->close();
-		return $result; // return result set
-	}	
-}
+		// print products
+		if ($numRow) 
+		{
+			echo "<div class='container_products'>";
+			session_start();
+			while ($row = $result->fetch_array(MYSQLI_ASSOC)) 
+			{
+				$_SESSION[$row['name']] = $row['name'];
 
+				$img = "<img class='img_block' src='" . $row['images'] . "'>";
 
-class Cart extends Connection{
-
-	function Cart(){
-		$this->subtotal = 0;
-	}
-
-	function setter($subtotal){
-		$this->subtotal = $subtotal;
-	}
-
-	function getter(){
-		return $this->subtotal;
-	}
-
-	function sum_semitotal($id){
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "SELECT * FROM cart WHERE id_user = '$id'";	
-		$result = $mysqli->query($query);
-		$mysqli->close();
-
-		if ($result) {
-			$total = 0;
-			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-				echo $row['id_user'] . " " . $row['name_product'] . " " . $row['total_price'] . " <br>";
-				$total += $row['total_price'];
+				echo "<div class='block_product'>";
+					
+					echo "$img";
+					echo "<div>" . $row['name'] . "</div>";
+					echo "<div>$" . $row['price'] . "</div>";
+			
+					echo "<form method='get' action='button_event.php'>";
+						echo "<input  id='hide'  name='test' value='" . $row['name'] . "'>";
+						echo "<input type='submit' name='". $row['name'] ."' value='assdasd'>";
+					echo "</form>";
+				echo "</div>";
 			}
-			echo "sub-total = $total <br>";
-			$this->setter($total);
+			
+			
+			
+			echo "</div>";
 		}
-
 	}
 
-	function payment($id, $total, $balance){
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "UPDATE users SET balance = $balance - $total WHERE id_user = '$id'";
-		$result = $mysqli->query($query);
-		$mysqli->close();
-	}
+
 }
 
 ?>

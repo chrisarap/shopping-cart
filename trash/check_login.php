@@ -10,7 +10,7 @@ $password = $_GET['password'];
 if (isset($_GET['create_user'])) {
 	$myVar = new Login($username, $password);
 	$myVar->create_new_user();
-	header('location: login.php');
+	header('location: index.php');
 }
 
 if (isset($_GET['submit_login'])) {

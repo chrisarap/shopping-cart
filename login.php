@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Login</title>
 </head>
 <body>
-	<form action="check_login.php" method="get">
-		<label for="username">login<input id="username" name="username" placeholder="username"></label>
-		<label for="password">password<input id="password" name="password" placeholder="password"></label>
-		<input type="submit" name="submit_login" value="log in">
-		<input type="submit" name="create_user" value="sign up">
-	</form>
+
+<!-- this username=admin and password=1234 are just for testing-->
+<form action="button_event.php" method="post">
+	<input type="text" name="username" placeholder="username" required value="admin">
+	<input type="text" name="password" placeholder="password" required value="12345">
+	<input type="submit" name="log-in" value="log in">
+</form>
+
 </body>
 </html>

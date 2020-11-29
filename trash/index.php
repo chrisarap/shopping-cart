@@ -53,31 +53,37 @@
 	}
 ?>
 
+<?php
+$fuck = 'ups';
+?>
+
 <form method="get">
-	<select name='shipping' required>
-		<option value="">select shipping</option>
-		<option value="pickup">pick up</option>
-		<option value="ups">ups</option>
-	</select>
+	<input id="radio" type="radio" name="shipping" required value="pickup">pick up
+	<input id="radio" type="radio" name="shipping" required value="ups">ups
 	<input type="submit" name="pay" value="pay">
 </form>
 
 
 <?php
+
 	// print my cart
 	$myCart = new Cart();
 	$myCart->sum_semitotal($userRow['id_user']);
 
 	if (isset($_GET['pay'])) {
+
 		if ($_GET['shipping'] == 'ups') {
-			echo "shipping: ups + $5.00<br>";
-			echo "total = " . ($myCart->getter() + 5) . "<br>"  ;
+			echo "the sub total is $".$myCart->add_shipping(5) . "<br>";
 			
-			$myCart->payment($userRow['id_user'], $myCart->getter() + 5, $userRow['balance']);
+			$myCart->payment($userRow['id_user'], $myCart->add_shipping(5) + 5, $userRow['balance']);
 			echo $userRow['balance'];
+			header('location: final.php');
 		} else {
-			echo "shipping: pick up + $0.00<br>";
-			echo "total = " . $myCart->getter() . "<br>"  ;	
+			echo "the sub total is $".$myCart->add_shipping(0) . "<br>";
+			
+			$myCart->payment($userRow['id_user'], $myCart->add_shipping(5) + 5, $userRow['balance']);
+			echo $userRow['balance'];
+			header('location: final.php');
 		}		
 	}
 ?>
