@@ -46,7 +46,9 @@ for ($i=1; $i <= 5; $i++)
 		session_start();
 
 		$rating = new Rating();
-		$rating->updateRating($i, $_SESSION['nameProduct']);
+		//$rating->updateRating($i, $_SESSION['nameProduct']);
+		$rating->add_vote_json($_SESSION['username'], $_SESSION['nameProduct'], $i);
+
 	}
 }
 
@@ -106,7 +108,7 @@ if (isset($_GET['logout']))
 {
 	$user = new User();
 	$user->return_100();
-	
+
 	$connection = new Connection();
 	$connection->close_session();
 }

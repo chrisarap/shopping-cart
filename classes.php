@@ -67,6 +67,9 @@ class User extends Connection
 		VALUES ('$username', '$password', 100)";
 		$result = $this->resulset($query);
 
+		$rating = new Rating();
+		$rating->create_user_json($username);
+
 		$this->check_user($username, $password);
 
 	}
@@ -102,7 +105,8 @@ class Rating extends Connection {
 				echo '<input class="btn2" form="ratingg" type="submit" name="3" value="3">';
 				echo '<input class="btn2" form="ratingg" type="submit" name="4" value="4">';
 				echo '<input class="btn2" form="ratingg" type="submit" name="5" value="5">';
-				$this->show_rating($_SESSION['nameProduct']);
+				//$this->show_rating($_SESSION['nameProduct']);
+				$this->show_rating_from_json($_SESSION['nameProduct'], $_SESSION['username']);
 			echo '</form>';
 			
 		echo "</div>";
@@ -131,6 +135,90 @@ class Rating extends Connection {
 		header("location: product_information.php");
 		
 	}
+
+	function create_user_json($username){	
+		// load user.json
+		$json = file_get_contents('user.json');
+		
+		// convert user.json to an array
+		$userArr = json_decode($json, true);
+
+		// add new user to userArr
+		$userArr[$username] = array();
+
+		// convert useArr to json
+		$json = json_encode($userArr);	
+
+		// add data to json file
+		$fileName = 'user.json';
+		file_put_contents($fileName, $json);
+	}
+
+	// new updating method
+	function add_vote_json($username, $product, $vote){
+		// load user.json
+		$json = file_get_contents('user.json');
+		
+		// convert user.json to an array
+		$userArr = json_decode($json, true);
+
+		// add product and vote to user
+		$userArr[$username][$product] = $vote;		
+
+		// convert useArr to json
+		$json = json_encode($userArr);	
+
+		// add data to json file
+		$fileName = 'user.json';
+		file_put_contents($fileName, $json);
+
+		header('location: product_information.php');
+	}
+
+	// 
+	function show_rating_from_json($product, $username){
+		// load user.json
+		$json = file_get_contents('user.json');
+		
+		// convert user.json to an array
+		$userArr = json_decode($json, true);
+
+		//load all users from database
+		$query = "SELECT * FROM users";
+		$result = $this->resulset($query);
+		$numRow = $result->num_rows;
+
+		// store all votes from actual product
+		$productVotes = array();
+
+		if($numRow){
+			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+				// check if the n user have the product
+				if(array_key_exists($product, $userArr[$row['username']])) {
+					// push vote to $productVote
+					array_push($productVotes, $userArr[$row['username']][$product]);
+				}
+						
+			}
+		}
+		
+		$average = 0;
+
+		// check if $productVotes is true to avoid division / 0
+		if ($productVotes) {
+			$average = array_sum($productVotes) / count($productVotes);
+		}
+
+		// print average
+		if ($average) {
+			echo var_dump($average);
+		} else {
+			echo "<div>Be the first to rate this product</div>";
+		}
+	}
+
+
+
 } // end class rating
 
 class Product extends Connection 
