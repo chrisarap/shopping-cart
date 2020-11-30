@@ -61,7 +61,8 @@ class User extends Connection
 		}
 	}	
 
-	function create_new_user($username, $password){
+	function create_new_user($username, $password)
+	{
 
 		$query = "INSERT INTO users (username, password, balance) 
 		VALUES ('$username', '$password', 100)";
@@ -74,14 +75,16 @@ class User extends Connection
 
 	}
 
-	function load_user_data(){
+	function load_user_data()
+	{
 		
 		$query = "SELECT * FROM users WHERE username ='". $_SESSION['username'].  "'";
 		$result = $this->resulset($query);
 		return $result->fetch_array(MYSQLI_ASSOC);
 	}
 
-	function return_100(){
+	function return_100()
+	{
 		$query = "UPDATE users SET balance = 100";
 		$this->resulset($query);
 	}
@@ -96,30 +99,46 @@ class Rating extends Connection {
 	function print_rating()
 	{
 
-		echo "<div class='rating'>";
-			echo '<form id="ratingg" action="btn_event.php" method="get">';
+		// load user.json
+		$json = file_get_contents('user.json');
+		
+		// convert user.json to an array
+		$userArr = json_decode($json, true);
 
-				echo '<input hidden form="ratingg" type="text" name="product" value="'. $_SESSION['nameProduct'] .'">';
-				echo '<input class="btn2" form="ratingg" type="submit" name="1" value="1">';
-				echo '<input class="btn2" form="ratingg" type="submit" name="2" value="2">';
-				echo '<input class="btn2" form="ratingg" type="submit" name="3" value="3">';
-				echo '<input class="btn2" form="ratingg" type="submit" name="4" value="4">';
-				echo '<input class="btn2" form="ratingg" type="submit" name="5" value="5">';
-				//$this->show_rating($_SESSION['nameProduct']);
-				$this->show_rating_from_json($_SESSION['nameProduct'], $_SESSION['username']);
-			echo '</form>';
-			
-		echo "</div>";
+		if(array_key_exists($_SESSION['nameProduct'], $userArr[$_SESSION['username']]))
+		{
+			$this->show_rating_from_json($_SESSION['nameProduct'], $_SESSION['username']);
+		} else {
+			echo "<div class='rating'>";
+				echo '<form id="ratingg" action="btn_event.php" method="get">';
+
+					echo '<input hidden form="ratingg" type="text" name="product" value="'. $_SESSION['nameProduct'] .'">';
+					echo '<input class="btn2" form="ratingg" type="submit" name="1" value="1">';
+					echo '<input class="btn2" form="ratingg" type="submit" name="2" value="2">';
+					echo '<input class="btn2" form="ratingg" type="submit" name="3" value="3">';
+					echo '<input class="btn2" form="ratingg" type="submit" name="4" value="4">';
+					echo '<input class="btn2" form="ratingg" type="submit" name="5" value="5">';
+					//$this->show_rating($_SESSION['nameProduct']);
+					$this->show_rating_from_json($_SESSION['nameProduct'], $_SESSION['username']);
+				echo '</form>';			
+			echo "</div>";
+		}
+
+
+
+		
 	}
 
-	function show_rating($nameProduct){
+	function show_rating($nameProduct)
+	{
 		$query = "SELECT * FROM products WHERE name = '$nameProduct'";
 		$result = $this->resulset($query);
 		$row = $result->fetch_array(MYSQLI_ASSOC);
 		echo "<div>Rating ". $row['rating']. "</div>";
 	}
 
-	function updateRating($vote, $name){
+	function updateRating($vote, $name)
+	{
 		
 		// load data
 		$query = "SELECT * FROM products WHERE name = '$name'";
@@ -136,7 +155,8 @@ class Rating extends Connection {
 		
 	}
 
-	function create_user_json($username){	
+	function create_user_json($username)
+	{	
 		// load user.json
 		$json = file_get_contents('user.json');
 		
@@ -155,7 +175,8 @@ class Rating extends Connection {
 	}
 
 	// new updating method
-	function add_vote_json($username, $product, $vote){
+	function add_vote_json($username, $product, $vote)
+	{
 		// load user.json
 		$json = file_get_contents('user.json');
 		
@@ -176,7 +197,8 @@ class Rating extends Connection {
 	}
 
 	// 
-	function show_rating_from_json($product, $username){
+	function show_rating_from_json($product, $username)
+	{
 		// load user.json
 		$json = file_get_contents('user.json');
 		
@@ -191,10 +213,13 @@ class Rating extends Connection {
 		// store all votes from actual product
 		$productVotes = array();
 
-		if($numRow){
-			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+		if($numRow)
+		{
+			while ($row = $result->fetch_array(MYSQLI_ASSOC)) 
+			{
 				// check if the n user have the product
-				if(array_key_exists($product, $userArr[$row['username']])) {
+				if(array_key_exists($product, $userArr[$row['username']]))
+				{
 					// push vote to $productVote
 					array_push($productVotes, $userArr[$row['username']][$product]);
 				}
@@ -205,13 +230,15 @@ class Rating extends Connection {
 		$average = 0;
 
 		// check if $productVotes is true to avoid division / 0
-		if ($productVotes) {
+		if ($productVotes) 
+		{
 			$average = array_sum($productVotes) / count($productVotes);
 		}
 
 		// print average
-		if ($average) {
-			echo var_dump($average);
+		if ($average)
+		{
+			echo "<div> Rate " . $average . "<div>";
 		} else {
 			echo "<div>Be the first to rate this product</div>";
 		}
@@ -258,7 +285,8 @@ class Product extends Connection
 
 	function print_selected_product($result)
 	{
-		if($result->num_rows){	
+		if($result->num_rows)
+		{	
 			$row = $result->fetch_array(MYSQLI_ASSOC);
 
 			$img =  $row["images"];
@@ -292,7 +320,8 @@ class Product extends Connection
 		}
 	} // end function print_selected_product
 
-	function load_product_data(){
+	function load_product_data()
+	{
 		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
 		$query = "SELECT * FROM products WHERE name = '$this->productName'";
 		$result = $mysqli->query($query);
@@ -315,7 +344,8 @@ class Cart extends Connection
 		$this->resulset($query);
 	}
 
-	function execute_add_to_cart(){
+	function execute_add_to_cart()
+	{
 		session_start();
 
 		$query = "SELECT * FROM products WHERE name='" . $_SESSION['nameProduct'] . "'";
@@ -338,7 +368,8 @@ class Cart extends Connection
 		header("location: product_information.php");
 	}
 
-	function updateQuantity($nameProduct, $quantity, $price){
+	function updateQuantity($nameProduct, $quantity, $price)
+	{
 		$totalPrice = $quantity * $price;
 
 		$query = "UPDATE cart SET quantity = '$quantity', total_price='$totalPrice'  
@@ -351,7 +382,8 @@ class Cart extends Connection
 	{
 		$result = $this->resulset("SELECT * FROM cart");
 
-		if($result->num_rows){
+		if($result->num_rows)
+		{
 			echo "<table>";
 				echo "<tr>";
 				echo "<th>Name</th> <th>Price</th> <th>Quantity</th> <th>Total</th> <th>Update</th> <th>Delete</th>";
@@ -433,15 +465,17 @@ class Invoice extends Connection
 		return $total;
 	}
 
-	function pay(){
-		$query =  "SELECT * FROM users";
+	function pay()
+	{
+		$query =  "SELECT * FROM users WHERE username = '".$_SESSION['username'] ."'";
 		$result = $this->resulset($query);
 		$row = $result->fetch_array(MYSQLI_ASSOC);
 
 		$balance = $row['balance'];
 		$newBalance = $row['balance'] - $row['count'];
 
-		$query = "UPDATE users SET balance = '$newBalance', prev_balance = '$balance'";
+		$query = "UPDATE users SET balance = '$newBalance', prev_balance = '$balance' 
+		WHERE username = '".$_SESSION['username'] ."'";
 
 		$this->resulset($query);
 	}
