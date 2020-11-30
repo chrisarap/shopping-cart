@@ -1,4 +1,55 @@
 body
 {
-	background: green;
+	padding-top: 20vh;
+	
+	color: white;
+	font-family: monospace;
+	background: #0F0F0E;
+	
+	display: flex;
+	justify-content: center;
+	
+}
+
+form
+{
+	background: #2A2A23;
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	
+	width: 30vw;
+	height: 30vh;
+	border-radius: 3px;
+}
+
+label
+{
+	display: flex;
+	flex-direction: column;
+}
+
+.btn
+{
+	font-family: monospace;
+	background: #FF5900;
+	color: white;
+	
+	border: none;
+	border-radius: 3px;
+
+	padding: 5px;
+	margin: 5px 0px;
+	width: 75px;
+}
+
+.bar_text 
+{
+	font-family: monospace;
+	border: none;
+	border-radius: 3px;
+
+	padding: 3px;
 }

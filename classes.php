@@ -1,10 +1,10 @@
 <?php
 class Connection 
 {
-	var $db_host = 'localhost';
+	private $db_host = 'localhost';
 	var $db_name = 'abc_hosting';
 	var $db_user = 'root';
-	var $db_pass = '';
+	public $db_pass = '';
 
 	function resulset($query)
 	{
@@ -39,8 +39,13 @@ class User extends Connection
 	function choose_page($numRow, $username)
 	{
 		if ($numRow) {
+			$query = "SELECT * FROM users WHERE username = '$username'";
+			$result = $this->resulset($query);
+			$row = $result->fetch_array(MYSQLI_ASSOC);
+			
 			session_start();
 			$_SESSION['username'] = $username;
+			$_SESSION['balance'] = $row['balance'];
 			header("location: search.php");
 		} else {
 			header("location: login.php");
@@ -79,6 +84,54 @@ class User extends Connection
 
 }
 
+class Rating extends Connection {
+
+	// rating
+	function print_rating()
+	{
+
+		echo "<div class='rating'>";
+			echo '<form id="ratingg" action="btn_event.php" method="get">';
+
+				echo '<input hidden form="ratingg" type="text" name="product" value="'. $_SESSION['nameProduct'] .'">';
+				echo '<input class="btn2" form="ratingg" type="submit" name="1" value="1">';
+				echo '<input class="btn2" form="ratingg" type="submit" name="2" value="2">';
+				echo '<input class="btn2" form="ratingg" type="submit" name="3" value="3">';
+				echo '<input class="btn2" form="ratingg" type="submit" name="4" value="4">';
+				echo '<input class="btn2" form="ratingg" type="submit" name="5" value="5">';
+				$this->show_rating($_SESSION['nameProduct']);
+			echo '</form>';
+			
+		echo "</div>";
+	}
+
+	function show_rating($nameProduct){
+		$query = "SELECT * FROM products WHERE name = '$nameProduct'";
+		$result = $this->resulset($query);
+		$row = $result->fetch_array(MYSQLI_ASSOC);
+		echo "<div>Rating ". $row['rating']. "</div>";
+	}
+
+	function updateRating($vote, $name){
+		
+		// load data
+		$query = "SELECT * FROM products WHERE name = '$name'";
+		$result = $this->resulset($query);
+		$row = $result->fetch_array(MYSQLI_ASSOC);
+
+		$average = ($row['rating'] + $vote) / 2;
+
+		// update rating
+		$updQuery = "UPDATE products SET rating = '$average' WHERE name = '$name'";
+		$this->resulset($updQuery);
+
+		header("location: product_information.php");
+		
+	}
+
+
+} // end class rating
+
 class Product extends Connection 
 {
 
@@ -102,12 +155,12 @@ class Product extends Connection
 				echo "<div class='block_product'>";
 					
 					echo "$img";
-					echo "<div>" . $row['name'] . "</div>";
+					echo "<div class='product_name'>" . $row['name'] . "</div>";
 					echo "<div>$" . $row['price'] . "</div>";
 			
 					echo "<form method='get' action='btn_event.php'>";
 						echo "<input hidden type='text' name='productName' value='" . $row['name'] . "'>";
-						echo "<input type='submit' name='see_product' value='see'>";
+						echo "<input class='btn' type='submit' name='see_product' value='see'>";
 					echo "</form>";
 				echo "</div>";
 			}
@@ -124,26 +177,32 @@ class Product extends Connection
 			$row = $result->fetch_array(MYSQLI_ASSOC);
 
 			$img =  $row["images"];
-
-			echo "<div class='container_products'>";
-				// form
-				echo "<form id='data' action='btn_event.php' method='get'>";
+			echo "<div class='container'>";
+				echo "<div class='container_products'>";
 					echo "<img src = \"$img\" class='img_block'>";
+					echo "<div>";
+						// form
+						echo "<form class='product' id='data' action='btn_event.php' method='get'>";
+							
 
-					echo "<div class='form_product'>";
-						echo "<h2>".$row['name']."</h2>";
-						echo "<h2>$".$row['price']."</h2>";
+							echo "<div class='form_product'>";
+								echo "<div class='product_name'>".$row['name']."</div>";
+								echo "<div>$".$row['price']."</div>";
+								
+								echo "<div class='label_name'>";
+									echo "<input class='bar_text1' required type='number' name='quantity' placeholder='Quantity' min='0'>";
+								echo "</div>";
+
+								echo "<input class='btn1' type='submit' name='add_to_cart' value='add to cart'>";	
+							echo "</div>";	
+
+						echo "</form>";
 						
-						echo "<div class='label_name'>";
-							echo "<div>quantity</div>";
-							echo "<input required type='number' name='quantity' placeholder='quantity' min='0'>";
-						echo "</div>";
-
-						echo "<input type='submit' name='add_to_cart' value='add to cart'>";
+						$rating = new Rating();
+						$rating->print_rating();
 					echo "</div>";
-
-				echo "</form>";
-			echo "</div>";			
+				echo "</div>";	
+			echo "</div>";		
 
 		}
 	} // end function print_selected_product
@@ -215,24 +274,39 @@ class Cart extends Connection
 		$result = $this->resulset("SELECT * FROM cart");
 
 		if($result->num_rows){
+			echo "<table>";
+				echo "<tr>";
+				echo "<th>Name</th> <th>Price</th> <th>Quantity</th> <th>Total</th> <th>Update</th> <th>Delete</th>";
+				echo "<tr>";
 			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
 				
 				echo "<form action='btn_event.php' method='get'>";
-					echo "<div class='row'>";
+					echo "<tr>";
 						echo "<input hidden type='text' name='name_product' value='" . $row['name_product'] . "'>";
+					echo "<td>";
 						echo "<div>" . $row['name_product'] . "</div>";
-
+					echo "</td>";
 						echo "<input hidden type='text' name='price' value='" . $row['price'] . "'>";
+					echo "<td>";
 						echo "<div>" . $row['price'] . "</div>";
-
-						echo "<input name='qnt' type='number' value='". $row['quantity'] . "'>";
+					echo "</td>";
+					echo "<td>";
+						echo "<input class='bar_text' name='qnt' type='number' value='". $row['quantity'] . "'>";
+					echo "</td>";
+					echo "<td>";
 						echo "<div>". $row['total_price']	."</div>";
-						echo "<input type='submit' value='update' name='update'>";
-						echo "<input type='submit' value='delete' name='delete'>";
-					echo "</div>";
+					echo "</td>";
+					echo "<td>";
+						echo "<input class='btn' type='submit' value='update' name='update'>";
+					echo "</td>";
+					echo "<td>";
+						echo "<input class='btn' type='submit' value='delete' name='delete'>";
+					echo "</td>";
+					echo "</tr>";
 				echo "</form>";
 				
 			}
+			echo "</table>";
 		}
 	}
 
@@ -242,53 +316,7 @@ class Cart extends Connection
 } // end cart class
 
 
-class Rating extends Connection {
 
-	// rating
-	function print_rating()
-	{
-
-		echo "<div class='rating'>";
-			echo '<form id="ratingg" action="btn_event.php" method="get">';
-
-				echo '<input hidden form="ratingg" type="text" name="product" value="'. $_SESSION['nameProduct'] .'">';
-				echo '<input form="ratingg" type="submit" name="1" value="1">';
-				echo '<input form="ratingg" type="submit" name="2" value="2">';
-				echo '<input form="ratingg" type="submit" name="3" value="3">';
-				echo '<input form="ratingg" type="submit" name="4" value="4">';
-				echo '<input form="ratingg" type="submit" name="5" value="5">';
-				$this->show_rating($_SESSION['nameProduct']);
-			echo '</form>';
-			
-		echo "</div>";
-	}
-
-	function show_rating($nameProduct){
-		$query = "SELECT * FROM products WHERE name = '$nameProduct'";
-		$result = $this->resulset($query);
-		$row = $result->fetch_array(MYSQLI_ASSOC);
-		echo "<div>". $row['rating']. "</div>";
-	}
-
-	function updateRating($vote, $name){
-		
-		// load data
-		$query = "SELECT * FROM products WHERE name = '$name'";
-		$result = $this->resulset($query);
-		$row = $result->fetch_array(MYSQLI_ASSOC);
-
-		$average = ($row['rating'] + $vote) / 2;
-
-		// update rating
-		$updQuery = "UPDATE products SET rating = '$average' WHERE name = '$name'";
-		$this->resulset($updQuery);
-
-		header("location: product_information.php");
-		
-	}
-
-
-} // end class rating
 
 class Invoice extends Connection
 {

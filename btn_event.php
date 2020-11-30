@@ -9,7 +9,7 @@ if (isset($_GET['signup'])) {
 }
 
 // log in button
-if (isset($_GET['login'])) {	
+if (isset($_GET['login'])) {
 	$user = new User();
 	$user->check_user($_GET['username'], $_GET['password']);
 }

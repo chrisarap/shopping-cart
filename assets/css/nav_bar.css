@@ -1,0 +1,86 @@
+body
+{
+	font-family: monospace;
+
+}
+
+.nav_bar 
+{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: #2A2A23;
+	height: 10vh;
+	color: white;
+	position: fixed;
+	width: 100%;
+	top: 0;
+
+}
+
+.nav_bar form
+{
+	display: flex;
+	align-items: center;
+}
+
+.nav_bar ul
+{
+	display: flex;
+	
+	list-style: none;
+	
+	padding: 0;
+	margin: 0;
+}
+
+.nav_bar li
+{
+	margin: 0 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.nav_bar a
+{
+	text-decoration: none;
+		height: 10vh;
+		display: flex;
+	justify-content: center;
+	align-items: center;
+	color: white;
+	
+}
+
+.nav_bar a:hover
+{
+	background: #FF5900;
+}
+
+.btn
+{
+	font-family: monospace;
+	background: #FF5900;
+	color: white;
+	
+	border: none;
+	border-radius: 3px;
+
+	width: 75px;
+		padding: 5px;
+
+}
+
+.bar_text 
+{
+	font-family: monospace;
+	border: none;
+	border-radius: 3px;
+
+	padding: 3px;
+
+	height: 20px;
+	width: 250px;
+	margin-right: 10px;
+}

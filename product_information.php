@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="./assets/css/product_data.css">
+	<link rel="stylesheet" type="text/css" href="./assets/css/product_information.css">
 </head>
 <body>
 
 <?php
 
+require('nav_bar.php');
 require('classes.php');
-session_start();
+//session_start();
 
 $query = "SELECT * FROM products where name = '" . $_SESSION['nameProduct'] . "'";
 $product = new Product();
@@ -17,12 +18,6 @@ $result = $product->resulset($query);
 $product->print_selected_product($result);
 
 
-$rating = new Rating();
-$rating->print_rating();
-
-
-echo '<a href="search.php">back</a><br>';
-echo '<a href="load_cart.php">mycart</a>';
 ?>
 
 

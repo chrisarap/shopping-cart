@@ -8,25 +8,35 @@
 <?php
 
 require('classes.php');
+require('nav_bar.php');
+echo "<div class='container'>";
 
-// load cart
-$cart = new Cart();
-$cart->load_cart();
+	echo "<div  class='loaded_cart'>";
+		// load cart
+		$cart = new Cart();
+		$cart->load_cart();
+	echo "</div>";
+		//session_start();
 
-session_start();
-
-// print sub total
-$invoice = new Invoice();
-echo $invoice->subtotal();
-
+	echo "<div class='invoice'>";
+		// print sub total
+		$invoice = new Invoice();
+		echo "<h1> Sub-total = $" . $invoice->subtotal(). "</h1>";
 ?>
 
+<h2>Shipping</h2>
 <form action="btn_event.php" method="get">
-	<input required type="radio" name="radio" value="pickup">pick up
-	<input required type="radio" name="radio" value="ups">	ups
-	<input type="submit" name="pay" value="pay">
+	<div>
+		<input required type="radio" name="radio" value="pickup">Pick up
+		<input required type="radio" name="radio" value="ups">	UPS
+	</div>
+	<input class="btn" type="submit" name="pay" value="Pay">
 </form>
 
+<?php
+	echo "</div>";
+echo "</div>";
+?>
 
 </body>
 </html>

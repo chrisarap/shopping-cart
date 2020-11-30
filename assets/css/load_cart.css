@@ -1,4 +1,50 @@
-.row{
+body
+{
+	background-color: #707070;
+	margin: 0;
+}
+
+.container
+{
+	margin-top: 10vh;
 	display: flex;
-	background: green;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 10vh;
+}
+
+table{
+	text-align: center;
+	margin-top: 10vh;
+}
+
+.invoice{
+	background-color: #2A2A23;
+	width: 40vw;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	color: white;
+	padding: 20px 0;
+	margin-top: 10vh;
+
+}
+
+.invoice form{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+}
+
+.invoice form .btn{
+	align-self: center;
+}
+
+.bar_text
+{
+	width: 60px !important;
 }
