@@ -4,11 +4,18 @@
 
 <?php
 	session_start();
+	require_once('classes.php');
+	$cart = new Cart();
+	$cart->cart_number_row();
+
+	$user = new User();
+	$row = $user->load_user_data();
+	
 ?>
 
 <div class="nav_bar">
 	<ul>
-		<a href="load_cart.php"><li>My Cart (<?php echo $_SESSION['numRow'];?>)</li></a>
+		<a href="load_cart.php"><li>My Cart (<?php echo $cart->cart_number_row();?>)</li></a>
 		<a href="search.php"><li>Search</li></a>
 	</ul>
 
@@ -21,7 +28,7 @@
 
 	<ul>
 		<li><?php echo "Welcome @". $_SESSION['username']; ?></li>
-		<li><?php echo "$". $_SESSION['balance']; ?></li>
+		<li><?php echo "$". $row['balance']; ?></li>
 		<form method="get" action="btn_event.php"><input class="btn" type="submit" value="Log Out" name="logout"></form>
 	</ul>
 </div>

@@ -6,7 +6,7 @@ if (isset($_GET['signup']))
 {
 	$user = new User();
 	$user->create_new_user($_GET['username'], $_GET['password']);
-	header('location: search.php');
+	//header('location: search.php');
 }
 
 // log in button
@@ -90,7 +90,6 @@ if (isset($_GET['pay']))
 }
 
 // final payment
-
 if (isset($_GET['payment'])) 
 {
 	session_start();
@@ -105,6 +104,9 @@ if (isset($_GET['payment']))
 
 if (isset($_GET['logout'])) 
 {
+	$user = new User();
+	$user->return_100();
+	
 	$connection = new Connection();
 	$connection->close_session();
 }

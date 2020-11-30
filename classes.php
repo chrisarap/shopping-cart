@@ -1,10 +1,16 @@
 <?php
 class Connection 
 {
+	/*
 	private $db_host = 'mysql.zz.com.ve';
 	private $db_name = 'chrisar';
 	private $db_user = 'dbone';
 	private $db_pass = 'Mouse1212';
+	*/
+	private $db_host = 'localhost';
+	private $db_name = 'abc_hosting';
+	private $db_user = 'root';
+	private $db_pass = '';
 
 	function resulset($query)
 	{
@@ -14,7 +20,8 @@ class Connection
 		return $result;
 	}
 
-	function close_session(){
+	function close_session()
+	{
 		session_start();
 		session_destroy();
 		header('location: login.php');
@@ -54,23 +61,31 @@ class User extends Connection
 		}
 	}	
 
-	function create_new_user(){
+	function create_new_user($username, $password){
 
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "INSERT INTO users (username, password, balance) VALUES ('$this->username', '$this->password', 100)";
-		$mysqli->query($query);
-		$mysqli->close();
+		$query = "INSERT INTO users (username, password, balance) 
+		VALUES ('$username', '$password', 100)";
+		$result = $this->resulset($query);
+
+		$this->check_user($username, $password);
+
 	}
 
 	function load_user_data(){
-		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
-		$query = "SELECT * FROM users WHERE username = '$this->username' && password = '$this->password'";
-		$result = $mysqli->query($query);
-		$mysqli->close();
-		return $result->fetch_array(MYSQLI_ASSOC); // return an associative row
+		
+		$query = "SELECT * FROM users WHERE username ='". $_SESSION['username'].  "'";
+		$result = $this->resulset($query);
+		return $result->fetch_array(MYSQLI_ASSOC);
 	}
 
-}
+	function return_100(){
+		$query = "UPDATE users SET balance = 100";
+		$this->resulset($query);
+	}
+
+
+
+} // end user class
 
 class Rating extends Connection {
 
@@ -299,6 +314,7 @@ class Invoice extends Connection
 	
 	function subtotal()
 	{
+		/*
 		$query = "SELECT * FROM cart";
 		$result = $this->resulset($query);
 
@@ -311,6 +327,8 @@ class Invoice extends Connection
 			}
 			return $total;
 		}
+		*/
+		return 11;
 	}
 
 	function total($subtotal, $shipping)

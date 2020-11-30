@@ -7,7 +7,7 @@
 
 <?php
 require('nav_bar.php');
-require('classes.php');
+//require('classes.php');
 
 // load products
 $product = new Product();

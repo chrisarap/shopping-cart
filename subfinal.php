@@ -7,7 +7,7 @@
 
 <?php
 require('nav_bar.php');
-require('classes.php');
+//require('classes.php');
 //session_start();
 
 echo "<div class='container'>";
