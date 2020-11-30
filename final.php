@@ -32,9 +32,6 @@ $cart = new Cart();
 $cart->resulset($query);
 
 echo "<a href='search.php'>back</a>";
-
-
-
 ?>
 </body>
 </html>

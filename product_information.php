@@ -17,10 +17,7 @@ $result = $product->resulset($query);
 
 $product->print_selected_product($result);
 
-
 ?>
-
-
 
 </body>
 </html>

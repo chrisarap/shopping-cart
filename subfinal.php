@@ -10,7 +10,6 @@ require('nav_bar.php');
 require('classes.php');
 //session_start();
 
-
 echo "<div class='container'>";
 	echo "<div>SUB-TOTAL = $" . $_SESSION['subtotal'] . "</div>";
 	echo "<div>SHIPPING = $" . $_SESSION['shipping']  . ".00</div>";
@@ -18,7 +17,6 @@ echo "<div class='container'>";
 	echo "<div>TOTAL = $" . $_SESSION['total'] . "</div>";
 
 ?>
-
 
 <form action="btn_event.php" method="get">
 	<input class="btn" type="submit" name="payment" value="Pay">

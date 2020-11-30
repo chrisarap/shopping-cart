@@ -1,10 +1,10 @@
 <?php
 class Connection 
 {
-	private $db_host = 'localhost';
-	var $db_name = 'abc_hosting';
-	var $db_user = 'root';
-	public $db_pass = '';
+	private $db_host = 'mysql.zz.com.ve';
+	private $db_name = 'chrisar';
+	private $db_user = 'dbone';
+	private $db_pass = 'Mouse1212';
 
 	function resulset($query)
 	{
@@ -24,7 +24,6 @@ class Connection
 class User extends Connection 
 {
 
-
 	// check user login
 	function check_user($username, $password)
 	{
@@ -38,7 +37,8 @@ class User extends Connection
 	// login or reject user
 	function choose_page($numRow, $username)
 	{
-		if ($numRow) {
+		if ($numRow) 
+		{
 			$query = "SELECT * FROM users WHERE username = '$username'";
 			$result = $this->resulset($query);
 			$row = $result->fetch_array(MYSQLI_ASSOC);
@@ -46,22 +46,13 @@ class User extends Connection
 			session_start();
 			$_SESSION['username'] = $username;
 			$_SESSION['balance'] = $row['balance'];
+			$cart = new Cart();
+			$_SESSION['numRow'] = $cart->cart_number_row();
 			header("location: search.php");
 		} else {
 			header("location: login.php");
 		}
 	}	
-
-
-
-
-
-
-
-
-
-
-
 
 	function create_new_user(){
 
@@ -71,8 +62,6 @@ class User extends Connection
 		$mysqli->close();
 	}
 
-
-
 	function load_user_data(){
 		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
 		$query = "SELECT * FROM users WHERE username = '$this->username' && password = '$this->password'";
@@ -80,7 +69,6 @@ class User extends Connection
 		$mysqli->close();
 		return $result->fetch_array(MYSQLI_ASSOC); // return an associative row
 	}
-
 
 }
 
@@ -128,13 +116,10 @@ class Rating extends Connection {
 		header("location: product_information.php");
 		
 	}
-
-
 } // end class rating
 
 class Product extends Connection 
 {
-
 	//load products and print it
 	function print_product()
 	{
@@ -167,9 +152,6 @@ class Product extends Connection
 			echo "</div>";
 		}
 	}
-
-
-
 
 	function print_selected_product($result)
 	{
@@ -207,21 +189,14 @@ class Product extends Connection
 		}
 	} // end function print_selected_product
 
-
-
-
-
 	function load_product_data(){
 		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
 		$query = "SELECT * FROM products WHERE name = '$this->productName'";
 		$result = $mysqli->query($query);
 		$mysqli->close();
 		return $result; // return result set
-	}	
-
-	
+	}			
 }
-
 
 class Cart extends Connection
 {
@@ -278,7 +253,8 @@ class Cart extends Connection
 				echo "<tr>";
 				echo "<th>Name</th> <th>Price</th> <th>Quantity</th> <th>Total</th> <th>Update</th> <th>Delete</th>";
 				echo "<tr>";
-			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+			while ($row = $result->fetch_array(MYSQLI_ASSOC)) 
+			{
 				
 				echo "<form action='btn_event.php' method='get'>";
 					echo "<tr>";
@@ -310,13 +286,13 @@ class Cart extends Connection
 		}
 	}
 
+	function cart_number_row()
+	{
+		$result = $this->resulset("SELECT * FROM cart");
+		return $result->num_rows;
 
-
-
+	}
 } // end cart class
-
-
-
 
 class Invoice extends Connection
 {
@@ -326,9 +302,11 @@ class Invoice extends Connection
 		$query = "SELECT * FROM cart";
 		$result = $this->resulset($query);
 
-		if ($result) {
+		if ($result) 
+		{
 			$total = 0;
-			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+			while ($row = $result->fetch_array(MYSQLI_ASSOC)) 
+			{
 				$total += $row['total_price'];
 			}
 			return $total;
@@ -363,8 +341,4 @@ class Invoice extends Connection
 	}
 
 } // end class total
-
-
-
-
 ?>
