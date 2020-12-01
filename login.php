@@ -5,13 +5,14 @@
 </head>
 <body>
 	<div>
+		<h1>Welcome</h1>
 		<form action="btn_event.php" method="get">
 			<label for="username">Login
-				<input class="bar_text" id="username" name="username" placeholder="username" value="admin">
+				<input class="bar_text" id="username" name="username" placeholder="username">
 			</label>
 			
 			<label  for="password">Password
-				<input class="bar_text" id="password" name="password" placeholder="password" value="12345">
+				<input class="bar_text" id="password" name="password" placeholder="password">
 			</label>
 
 			<div class="btns">

@@ -53,6 +53,8 @@ class User extends Connection
 			session_start();
 			$_SESSION['username'] = $username;
 			$_SESSION['balance'] = $row['balance'];
+			$_SESSION['id_user'] = $row['id_user'];
+
 			$cart = new Cart();
 			$_SESSION['numRow'] = $cart->cart_number_row();
 			header("location: search.php");
@@ -73,6 +75,30 @@ class User extends Connection
 
 		$this->check_user($username, $password);
 
+	}
+
+	// check if I have a registered user with the new name
+	function exist_user($newUser, $newPass)
+	{
+		$query = "select * from users";
+		$result = $this->resulset($query);
+		$numRow = $result->num_rows;
+		$names = array();
+		if ($numRow) {
+			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+				array_push($names, $row['username']);
+			}
+		} 
+
+		if (in_array($newUser, $names)) {
+			session_start();
+			$_SESSION['message'] = "This username already exists";
+			header('location: register.php');
+		} else {
+			session_start();
+			$this->create_new_user($newUser, $newPass);
+		}
+		
 	}
 
 	function load_user_data()
@@ -123,9 +149,6 @@ class Rating extends Connection {
 				echo '</form>';			
 			echo "</div>";
 		}
-
-
-
 		
 	}
 
@@ -335,18 +358,21 @@ class Cart extends Connection
 
 	function add_row_cart($nameProduct, $priceProduct, $quantity, $totalPrice)
 	{
-		$query = "INSERT INTO cart (name_product, price, quantity, total_price) values ('$nameProduct','$priceProduct','$quantity','$totalPrice')";
+		$id_user = $_SESSION['id_user'];
+		$query = "INSERT INTO cart (name_product, price, quantity, total_price, id_user) 
+		values ('$nameProduct','$priceProduct','$quantity','$totalPrice', '$id_user')";
 		$this->resulset($query);
 	}
 	function delete_row_cart($nameProduct)
 	{
-		$query = "DELETE FROM cart WHERE name_product = '$nameProduct'";
+		$id_user = $_SESSION['id_user'];
+
+		$query = "DELETE FROM cart WHERE name_product = '$nameProduct' && id_user = '$id_user'";
 		$this->resulset($query);
 	}
 
 	function execute_add_to_cart()
 	{
-		session_start();
 
 		$query = "SELECT * FROM products WHERE name='" . $_SESSION['nameProduct'] . "'";
 		
@@ -380,7 +406,7 @@ class Cart extends Connection
 
 	function load_cart()
 	{
-		$result = $this->resulset("SELECT * FROM cart");
+		$result = $this->resulset("SELECT * FROM cart where id_user ='" . $_SESSION['id_user'] . "'");
 
 		if($result->num_rows)
 		{
@@ -423,7 +449,7 @@ class Cart extends Connection
 
 	function cart_number_row()
 	{
-		$result = $this->resulset("SELECT * FROM cart");
+		$result = $this->resulset("SELECT * FROM cart where id_user ='" . $_SESSION['id_user'] ."'");
 		return $result->num_rows;
 
 	}
@@ -434,8 +460,8 @@ class Invoice extends Connection
 	
 	function subtotal()
 	{
-		/*
-		$query = "SELECT * FROM cart";
+		
+		$query = "SELECT * FROM cart where id_user ='" . $_SESSION['id_user'] ."'";
 		$result = $this->resulset($query);
 
 		if ($result) 
@@ -447,8 +473,6 @@ class Invoice extends Connection
 			}
 			return $total;
 		}
-		*/
-		return 11;
 	}
 
 	function total($subtotal, $shipping)
@@ -478,6 +502,26 @@ class Invoice extends Connection
 		WHERE username = '".$_SESSION['username'] ."'";
 
 		$this->resulset($query);
+
+	}
+
+	function print_final_invoice(){
+		
+
+		// print invoice
+		$query =  "SELECT * FROM users WHERE username = '".$_SESSION['username'] ."'";
+		$result = $this->resulset($query);
+		$row = $result->fetch_array(MYSQLI_ASSOC);
+
+		echo "<div class=container>";
+			echo "<div>Thanks for Shopping @" . $row['username'] ."</div>";
+			echo "<div>-------------------------------------</div>";
+			echo "<div>Previous Balance = $" . $row['prev_balance'] ."</div>";
+			echo "<div>Purchase Cost = $" . $row['count'] ."</div>";
+			echo "<div>-------------------------------------</div>";
+			echo "<div>New Balance = $" . $row['balance'] ."</div>";
+
+		echo "</div>";
 	}
 
 } // end class total

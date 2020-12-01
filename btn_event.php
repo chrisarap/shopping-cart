@@ -1,19 +1,33 @@
 <?php
 require('classes.php');
 
+// create new user
+if (isset($_GET['register'])) 
+{
+
+	if ($_GET['password1']  !== $_GET['password2']) {
+		session_start();
+		$_SESSION['message'] = "The password are different";
+		header("location: register.php");
+	} else if ($_GET['password1']  === $_GET['password2']) {
+		$user = new User();
+		$user->exist_user(strtolower($_GET['new_user']), $_GET['password1']);
+	}
+}
+
 // sign up button
 if (isset($_GET['signup'])) 
 {
-	$user = new User();
-	$user->create_new_user($_GET['username'], $_GET['password']);
-	//header('location: search.php');
+	session_start();
+	$_SESSION['message'] = "";
+	header('location: register.php');
 }
 
 // log in button
 if (isset($_GET['login'])) 
 {
 	$user = new User();
-	$user->check_user($_GET['username'], $_GET['password']);
+	$user->check_user(strtolower($_GET['username']), $_GET['password']);
 }
 
 // see button
@@ -101,6 +115,12 @@ if (isset($_GET['payment']))
 	$cart = new Cart();	
 	$_SESSION['numRow'] = $cart->cart_number_row();
 	
+	// clean cart
+		$query = "DELETE from cart where id_user ='" . $_SESSION['id_user'] ."'";
+		$cart = new Cart();
+		$cart->resulset($query);
+		$cart->cart_number_row();
+
 	header("location: final.php");
 }
 
