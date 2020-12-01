@@ -34,6 +34,11 @@ echo "<div class='container'>";
 </form>
 
 <?php
+	// message for exceed balance
+	if ($_SESSION['message']) {
+		echo "<p>" . $_SESSION['message'] . "</p>";
+	}
+
 	echo "</div>";
 echo "</div>";
 ?>

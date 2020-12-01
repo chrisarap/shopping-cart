@@ -4,6 +4,7 @@
 
 <?php
 	session_start();
+	
 	require_once('classes.php');
 	$cart = new Cart();
 	$cart->cart_number_row();

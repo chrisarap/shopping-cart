@@ -12,6 +12,7 @@ require('nav_bar.php');
 // load products
 $product = new Product();
 $product->print_product();
+$_SESSION['message']="";
 ?>
 </body>
 </html>

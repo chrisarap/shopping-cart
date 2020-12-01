@@ -71,6 +71,7 @@ if (isset($_GET['update']))
 {
 	$cart = new Cart();	
 	session_start();
+	$_SESSION['message']="";
 	$_SESSION['numRow'] = $cart->cart_number_row();
 	$cart->updateQuantity($_GET['name_product'], $_GET['qnt'], $_GET['price']);
 }
@@ -78,8 +79,10 @@ if (isset($_GET['update']))
 // delete button
 if (isset($_GET['delete'])) 
 {
+
 	$cart = new Cart();	
 	session_start();
+	$_SESSION['message']="";
 	$_SESSION['numRow'] = $cart->cart_number_row();
 	$cart->delete_row_cart($_GET['name_product']);
 	header("location: load_cart.php");
@@ -100,9 +103,21 @@ if (isset($_GET['pay']))
 		$_SESSION['shipping'] = 0;
 	}
 	
+
 	$_SESSION['total'] = $invoice->total($invoice->subtotal(), $_SESSION['shipping']);
-		
-	header("location: subfinal.php");
+
+	$user = new User();
+	$result = $user->resulset("select * from users where id_user = '" . $_SESSION['id_user'] ."'");
+	$row = $result->fetch_array(MYSQLI_ASSOC);
+
+	
+	if ($row['balance'] >= $_SESSION['total']) {
+		header("location: subfinal.php");
+	} else {
+		$_SESSION['message'] = "Sorry, you don't have enough money to make the purchase";
+		header("location: load_cart.php");		
+	}
+	
 }
 
 // final payment
@@ -128,6 +143,7 @@ if (isset($_GET['logout']))
 {
 	$user = new User();
 	$user->return_100();
+	echo "esta es la session " . $_SESSION['username'];
 
 	$connection = new Connection();
 	$connection->close_session();

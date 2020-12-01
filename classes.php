@@ -2,17 +2,17 @@
 class Connection 
 {
 	
-	/*
+	
 	private $db_host = 'mysql.zz.com.ve';
 	private $db_name = 'chrisar';
 	private $db_user = 'dbone';
 	private $db_pass = 'Mouse1212';
-	*/
+	/*
 	private $db_host = 'localhost';
 	private $db_name = 'abc_hosting';
 	private $db_user = 'root';
 	private $db_pass = '';
-	
+	*/
 	function resulset($query)
 	{
 		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
@@ -53,7 +53,8 @@ class User extends Connection
 			
 			session_start();
 			$_SESSION['username'] = $username;
-			$_SESSION['balance'] = $row['balance'];
+			//$_SESSION['balance'] = $row['balance'];
+
 			$_SESSION['id_user'] = $row['id_user'];
 
 			$cart = new Cart();
@@ -112,7 +113,8 @@ class User extends Connection
 
 	function return_100()
 	{
-		$query = "UPDATE users SET balance = 100";
+		session_start();
+		$query = "UPDATE users SET balance = 100 WHERE username ='" . $_SESSION['username'] . "'";
 		$this->resulset($query);
 	}
 
@@ -366,8 +368,8 @@ class Cart extends Connection
 	}
 	function delete_row_cart($nameProduct)
 	{
-		$id_user = $_SESSION['id_user'];
 
+		$id_user = $_SESSION['id_user'];
 		$query = "DELETE FROM cart WHERE name_product = '$nameProduct' && id_user = '$id_user'";
 		$this->resulset($query);
 	}
@@ -478,7 +480,6 @@ class Invoice extends Connection
 
 	function total($subtotal, $shipping)
 	{
-		session_start();
 
 		$total = $subtotal + $shipping;
 		$username = $_SESSION['username'];
@@ -513,6 +514,7 @@ class Invoice extends Connection
 		$query =  "SELECT * FROM users WHERE username = '".$_SESSION['username'] ."'";
 		$result = $this->resulset($query);
 		$row = $result->fetch_array(MYSQLI_ASSOC);
+		$_SESSION['balance'] = $row['balance'];
 
 		echo "<div class=container>";
 			echo "<div>Thanks for Shopping @" . $row['username'] ."</div>";
