@@ -1,6 +1,7 @@
 <?php
 class Connection 
 {
+	
 	/*
 	private $db_host = 'mysql.zz.com.ve';
 	private $db_name = 'chrisar';
@@ -11,7 +12,7 @@ class Connection
 	private $db_name = 'abc_hosting';
 	private $db_user = 'root';
 	private $db_pass = '';
-
+	
 	function resulset($query)
 	{
 		$mysqli = new mysqli($this->db_host, $this->db_user, $this->db_pass, $this->db_name);
